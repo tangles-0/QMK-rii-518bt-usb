@@ -1,44 +1,27 @@
-/* Copyright 2025 tim-eastwood
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 #include QMK_KEYBOARD_H
 #define CTALDEL LCTL(LALT(KC_DEL))
 
-void keyboard_pre_init_user(void) {
-  gpio_set_pin_output(B2);
-  gpio_set_pin_output(B10);
-  gpio_set_pin_output(B11);
-  gpio_write_pin_low(B2);
-  gpio_write_pin_low(B10);
-  gpio_write_pin_low(B11);
-}
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  // If console is enabled, it will print the matrix position and status of each key pressed
+#ifdef CONSOLE_ENABLE
+    uprintf("KL: kc: 0x%04X, col: %2u, row: %2u, pressed: %u, time: %5u, int: %u, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
+#endif 
+  return true;
+} 
 
-
-/* Membrane labels - base
+/* Qwerty
  *        .----------------------------------------------------------------------------.
  *        |light | home |  GUI | MUTE | VOL- | VOL+ | Prev | Pause| Next |    Bksp     |
  * .------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |  1!  |  2@  |  3#  |  4$  |  5%  |  6^  |  7&  |  8*  |  9(  |  0)  | ` ~  |
+ * | Esc  |  1   |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  |  ~   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  | \|   |
+ * | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |  |   |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
- * | Caps |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |  ;:  | ' "  |
+ * | Caps |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  |  "   |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
- * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |  /?  |  Up  |   Enter     |
+ * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ?  |  Up  |   Enter     |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |     Fn      | Ctrl |  Alt |  -_  |  =+  |        Space       | Down | Left | Right|
+ * |     Fn      | Ctrl |  Alt |  -   |   =  |        Space       | Down | Left | Right|
  * `-----------------------------------------------------------------------------------'
  */
 
@@ -51,8 +34,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_SLSH, KC_UP,      KC_ENT,
       TT(1),        KC_LCTL, KC_LALT, KC_MINS, KC_EQL,  KC_SPC,  KC_SPC,  KC_SPC,  KC_DOWN, KC_LEFT, KC_RGHT
   ),
-
-  /* Membrane labels - function (orange)
+  
+  /* Qwerty
  *        .----------------------------------------------------------------------------.
  *        |      |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |     Del     |
  * .------+------+------+------+------+------+------+------+------+------+------+------|
